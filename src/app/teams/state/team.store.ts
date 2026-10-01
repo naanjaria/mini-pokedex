@@ -43,6 +43,7 @@ export class TeamStore {
       error: null,
     });
 
+    
     this.loadRequest = this.api.getTeams().pipe(
       takeUntilDestroyed(this.destroyRef),
     ).subscribe({
@@ -138,6 +139,10 @@ export class TeamStore {
       },
     });
   }
+/** Clears the latest mutation notification. */
+clearMessage(): void {
+  this.messageSubject.next(null);
+}
 
   private setTeams(teams: Team[]): void {
     this.stateSubject.next({

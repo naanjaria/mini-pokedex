@@ -70,9 +70,24 @@
     <section class="results" aria-label="Pokémon results">
       @switch (state().status) {
         @case ('loading') {
-          <div class="status" role="status" aria-live="polite">
-            <span class="spinner" aria-hidden="true"></span>
-            <p>Loading Pokémon…</p>
+          <div class="skeleton-table" role="status" aria-live="polite">
+            <span class="sr-only">Loading Pokémon…</span>
+
+            <div class="skeleton-header" aria-hidden="true">
+              <span>Sprite</span>
+              <span>Name</span>
+              <span>Types</span>
+              <span>Stats</span>
+            </div>
+
+            @for (row of skeletonRows; track row) {
+              <div class="skeleton-row" aria-hidden="true">
+                <span class="skeleton skeleton-sprite"></span>
+                <span class="skeleton skeleton-name"></span>
+                <span class="skeleton skeleton-type"></span>
+                <span class="skeleton skeleton-stats"></span>
+              </div>
+            }
           </div>
         }
 
@@ -170,7 +185,11 @@
     }
   }
 
-  <dialog #teamDialog aria-labelledby="team-dialog-title">
+  <dialog
+    #teamDialog
+    aria-labelledby="team-dialog-title"
+    (close)="teamDialogOpen.set(false)"
+  >
     <div class="dialog-header">
       <h2 id="team-dialog-title">Create team</h2>
 
@@ -180,5 +199,37 @@
     </div>
 
     <app-team-builder />
+
+    @if (teamDialogOpen()) {
+      @if (teamMessage(); as message) {
+        <div class="mutation-toast" role="status" aria-live="polite">
+          <span>{{ message }}</span>
+
+          <button
+            type="button"
+            aria-label="Dismiss notification"
+            (click)="teamStore.clearMessage()"
+          >
+            ×
+          </button>
+        </div>
+      }
+    }
   </dialog>
+
+  @if (!teamDialogOpen()) {
+    @if (teamMessage(); as message) {
+      <div class="mutation-toast" role="status" aria-live="polite">
+        <span>{{ message }}</span>
+
+        <button
+          type="button"
+          aria-label="Dismiss notification"
+          (click)="teamStore.clearMessage()"
+        >
+          ×
+        </button>
+      </div>
+    }
+  }
 </main>

@@ -63,3 +63,24 @@ button:disabled {
   padding: 6px 0;
   text-transform: capitalize;
 }
+.team-row {
+  animation: team-entry 200ms ease-out both;
+}
+
+@keyframes team-entry {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-row {
+    animation: none;
+  }
+}

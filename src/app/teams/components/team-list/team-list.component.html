@@ -30,7 +30,10 @@
     @case ('success') {
       <ul>
         @for (team of state().data; track team.id) {
-          <li>
+       <li
+    class="team-row"
+    [style.animation-delay.ms]="$index * 40"
+  >
             <div>
               <button
                 type="button"

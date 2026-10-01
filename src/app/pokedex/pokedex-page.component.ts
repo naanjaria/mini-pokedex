@@ -19,10 +19,15 @@ import {
 import {
   TeamListComponent,
 } from '../teams/components/team-list/team-list.component';
+
+import {
+  TeamBuilderComponent,
+} from '../teams/components/team-builder/team-builder.component';
+
 @Component({
   selector: 'app-pokedex-page',
   standalone: true,
-  imports: [PokemonTableComponent,PokemonDetailComponent,TeamListComponent],
+  imports: [PokemonTableComponent,PokemonDetailComponent,TeamListComponent,TeamBuilderComponent],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

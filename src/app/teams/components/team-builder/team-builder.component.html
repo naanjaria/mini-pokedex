@@ -1,0 +1,118 @@
+<section class="builder" aria-labelledby="builder-title">
+  <h2 id="builder-title">Create a team</h2>
+  <p>Choose 1–6 Pokémon. New teams belong to Ash.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label for="team-name">Team name</label>
+    <input id="team-name" formControlName="name" maxlength="30" />
+
+    @if (
+      form.controls.name.touched || form.controls.name.dirty
+    ) {
+      @if (form.controls.name.hasError('required')) {
+        <p class="error">Enter a team name.</p>
+      }
+      @if (
+        form.controls.name.hasError('minlength')
+        || form.controls.name.hasError('maxlength')
+      ) {
+        <p class="error">Use 3–30 characters.</p>
+      }
+      @if (form.controls.name.hasError('pattern')) {
+        <p class="error">Remove spaces at the start or end.</p>
+      }
+      @if (form.controls.name.hasError('nameTaken')) {
+        <p class="error">A team with this name already exists.</p>
+      }
+      @if (form.controls.name.hasError('teamCheckUnavailable')) {
+        <p class="error">
+          Load teams using Retry below, then edit the name to check again.
+        </p>
+      }
+    }
+
+    @if (form.controls.name.pending) {
+      <p role="status">Checking team name…</p>
+    }
+
+    <label for="pokemon-search">Find Pokémon</label>
+    <input
+      id="pokemon-search"
+      type="search"
+      [formControl]="search"
+      placeholder="Search by name"
+      [disabled]="selected().length >= 6"
+      aria-controls="pokemon-suggestions"
+    />
+
+    <div id="pokemon-suggestions" class="suggestions">
+      @switch (matches().status) {
+        @case ('loading') {
+          <p role="status">Loading Pokémon choices…</p>
+        }
+        @case ('error') {
+          <p role="alert">{{ matches().error }}</p>
+          <button type="button" (click)="pokemonStore.retry()">
+            Retry Pokémon
+          </button>
+        }
+        @case ('empty') {
+          <p>No Pokémon available.</p>
+        }
+        @case ('success') {
+          @if (selected().length >= 6) {
+            <p>Six Pokémon selected. Remove one to choose another.</p>
+          } @else {
+            <ul>
+              @for (pokemon of suggestions(); track pokemon.id) {
+                <li>
+                  <button type="button" (click)="add(pokemon)">
+                    {{ pokemon.name }}
+                  </button>
+                </li>
+              } @empty {
+                <li>No matching Pokémon available to add.</li>
+              }
+            </ul>
+          }
+        }
+      }
+    </div>
+
+    <div class="chips">
+      @for (pokemon of selected(); track pokemon.id) {
+        <span class="chip">
+          {{ pokemon.name }}
+          <button
+            type="button"
+            (click)="remove(pokemon.id)"
+            [attr.aria-label]="'Remove ' + pokemon.name"
+          >
+            ×
+          </button>
+        </span>
+      }
+    </div>
+
+    @if (
+      form.controls.pokemon.touched
+      && form.controls.pokemon.hasError('pokemonCount')
+    ) {
+      <p class="error">Select between 1 and 6 Pokémon.</p>
+    }
+
+    <p>{{ selected().length }} / 6 selected</p>
+
+    <button
+      type="submit"
+      [disabled]="
+        saving()
+        || form.pending
+        || teamState().status === 'loading'
+        || teamState().status === 'error'
+      "
+    >
+      {{ saving() ? 'Saving…' : 'Create team' }}
+    </button>
+  </form>
+</section>

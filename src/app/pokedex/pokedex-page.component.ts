@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   OnInit,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -33,6 +35,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PokedexPageComponent implements OnInit {
+  readonly activeTab = signal<'pokedex' | 'teams'>('pokedex');
   readonly store = inject(PokemonStore);
   readonly selectors = inject(PokemonSelectors);
 
@@ -56,7 +59,16 @@ export class PokedexPageComponent implements OnInit {
   });
 
   readonly selectedPokemon = signal<Pokemon | null>(null);
+private readonly teamDialog =
+  viewChild<ElementRef<HTMLDialogElement>>('teamDialog');
 
+openTeamBuilder(): void {
+  this.teamDialog()?.nativeElement.showModal();
+}
+
+closeTeamBuilder(): void {
+  this.teamDialog()?.nativeElement.close();
+}
   ngOnInit(): void {
     this.store.load();
   }

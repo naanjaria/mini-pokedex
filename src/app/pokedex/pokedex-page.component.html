@@ -1,117 +1,184 @@
 <main class="pokedex">
   <h1>Mini Pokédex</h1>
-  <p>Browse Pokémon and compare their stats.</p>
 
-  <section class="filters" aria-label="Pokémon filters">
-    <label>
-      Search by name
-      <input
-        #searchInput
-        type="search"
-        placeholder="Search Pokémon"
-        (input)="selectors.setSearch(searchInput.value)"
-      />
-    </label>
+  <div class="tabs" role="tablist" aria-label="Application sections">
+    <button
+      #pokedexTab
+      id="pokedex-tab"
+      type="button"
+      role="tab"
+      aria-controls="pokedex-content"
+      [attr.aria-selected]="activeTab() === 'pokedex'"
+      [attr.tabindex]="activeTab() === 'pokedex' ? 0 : -1"
+      (click)="activeTab.set('pokedex')"
+      (keydown.arrowright)="activeTab.set('teams'); teamsTab.focus(); $event.preventDefault()"
+      (keydown.arrowleft)="activeTab.set('teams'); teamsTab.focus(); $event.preventDefault()"
+    >
+      Pokémon
+    </button>
 
-    <label>
-      Type
-      <select
-        #typeSelect
-        (change)="selectors.setType(typeSelect.value)"
-      >
-        <option value="">All types</option>
+    <button
+      #teamsTab
+      id="teams-tab"
+      type="button"
+      role="tab"
+      aria-controls="teams-content"
+      [attr.aria-selected]="activeTab() === 'teams'"
+      [attr.tabindex]="activeTab() === 'teams' ? 0 : -1"
+      (click)="activeTab.set('teams')"
+      (keydown.arrowright)="activeTab.set('pokedex'); pokedexTab.focus(); $event.preventDefault()"
+      (keydown.arrowleft)="activeTab.set('pokedex'); pokedexTab.focus(); $event.preventDefault()"
+    >
+      Teams
+    </button>
+  </div>
 
-        @for (type of types(); track type) {
-          <option [value]="type">{{ type }}</option>
+  <div
+    id="pokedex-content"
+    role="tabpanel"
+    aria-labelledby="pokedex-tab"
+    [hidden]="activeTab() !== 'pokedex'"
+  >
+    <p>Browse Pokémon and compare their stats.</p>
+
+    <section class="filters" aria-label="Pokémon filters">
+      <label>
+        Search by name
+        <input
+          #searchInput
+          type="search"
+          placeholder="Search Pokémon"
+          (input)="selectors.setSearch(searchInput.value)"
+        />
+      </label>
+
+      <label>
+        Type
+        <select
+          #typeSelect
+          (change)="selectors.setType(typeSelect.value)"
+        >
+          <option value="">All types</option>
+
+          @for (type of types(); track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </label>
+    </section>
+
+    <section class="results" aria-label="Pokémon results">
+      @switch (state().status) {
+        @case ('loading') {
+          <div class="status" role="status" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <p>Loading Pokémon…</p>
+          </div>
         }
-      </select>
-    </label>
-  </section>
 
-  <section class="results" aria-label="Pokémon results">
-    @switch (state().status) {
-      @case ('loading') {
-        <div class="status" role="status" aria-live="polite">
-          <span class="spinner" aria-hidden="true"></span>
-          <p>Loading Pokémon…</p>
-        </div>
-      }
+        @case ('error') {
+          <div class="status" role="alert">
+            <p>{{ state().error }}</p>
+            <button type="button" (click)="store.retry()">
+              Retry
+            </button>
+          </div>
+        }
 
-      @case ('error') {
-        <div class="status" role="alert">
-          <p>{{ state().error }}</p>
-          <button type="button" (click)="store.retry()">
-            Retry
-          </button>
-        </div>
-      }
-
-      @case ('empty') {
-        <div class="status">
-          <p>No Pokémon are available.</p>
-        </div>
-      }
-
-      @case ('success') {
-        @if (page().total === 0) {
+        @case ('empty') {
           <div class="status">
-            <p>No Pokémon match your search and type filter.</p>
-          </div>
-        } @else {
-          <app-pokemon-table
-            [pokemon]="page().items"
-            (selected)="selectedPokemon.set($event)"
-            (sortChanged)="selectors.setSort($event)"
-          />
-
-          <div class="pagination">
-            <label>
-              Rows per page
-              <select
-                #sizeSelect
-                [value]="page().pageSize"
-                (change)="selectors.setPageSize(+sizeSelect.value)"
-              >
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-              </select>
-            </label>
-
-            <span>
-              Page {{ page().pageIndex + 1 }} of {{ page().pageCount }}
-              · {{ page().total }} Pokémon
-            </span>
-
-            <div class="page-buttons">
-              <button
-                type="button"
-                [disabled]="page().pageIndex === 0"
-                (click)="selectors.setPage(page().pageIndex - 1)"
-              >
-                Previous
-              </button>
-
-              <button
-                type="button"
-                [disabled]="page().pageIndex + 1 >= page().pageCount"
-                (click)="selectors.setPage(page().pageIndex + 1)"
-              >
-                Next
-              </button>
-            </div>
+            <p>No Pokémon are available.</p>
           </div>
         }
-      }
-    }
-  </section>
 
-  @if (selectedPokemon(); as selected) {
-  <app-pokemon-detail
-    [pokemonId]="selected.id"
-    (closed)="selectedPokemon.set(null)"
-  />
-}
-<app-team-builder />
-<app-team-list />
+        @case ('success') {
+          @if (page().total === 0) {
+            <div class="status">
+              <p>No Pokémon match your search and type filter.</p>
+            </div>
+          } @else {
+            <app-pokemon-table
+              [pokemon]="page().items"
+              (selected)="selectedPokemon.set($event)"
+              (sortChanged)="selectors.setSort($event)"
+            />
+
+            <div class="pagination">
+              <label>
+                Rows per page
+                <select
+                  #sizeSelect
+                  [value]="page().pageSize"
+                  (change)="selectors.setPageSize(+sizeSelect.value)"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </label>
+
+              <span>
+                Page {{ page().pageIndex + 1 }} of {{ page().pageCount }}
+                · {{ page().total }} Pokémon
+              </span>
+
+              <div class="page-buttons">
+                <button
+                  type="button"
+                  [disabled]="page().pageIndex === 0"
+                  (click)="selectors.setPage(page().pageIndex - 1)"
+                >
+                  Previous
+                </button>
+
+                <button
+                  type="button"
+                  [disabled]="page().pageIndex + 1 >= page().pageCount"
+                  (click)="selectors.setPage(page().pageIndex + 1)"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          }
+        }
+      }
+    </section>
+  </div>
+
+  <div
+    id="teams-content"
+    role="tabpanel"
+    aria-labelledby="teams-tab"
+    [hidden]="activeTab() !== 'teams'"
+  >
+    <div class="team-actions">
+      <button type="button" (click)="openTeamBuilder()">
+        Create team
+      </button>
+    </div>
+
+    <app-team-list />
+  </div>
+
+  @if (activeTab() === 'pokedex') {
+    @if (selectedPokemon(); as selected) {
+      <app-pokemon-detail
+        [pokemonId]="selected.id"
+        (closed)="selectedPokemon.set(null)"
+      />
+    }
+  }
+
+  <dialog #teamDialog aria-labelledby="team-dialog-title">
+    <div class="dialog-header">
+      <h2 id="team-dialog-title">Create team</h2>
+
+      <button type="button" (click)="closeTeamBuilder()">
+        Close
+      </button>
+    </div>
+
+    <app-team-builder />
+  </dialog>
 </main>

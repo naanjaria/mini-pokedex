@@ -1,0 +1,85 @@
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+th {
+  background: var(--color-background);
+}
+
+th button,
+.pokemon-name {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+th button {
+  font-weight: bold;
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background: var(--color-background);
+}
+
+.pokemon-name {
+  color: var(--color-primary);
+  text-transform: capitalize;
+}
+
+img,
+.sprite-placeholder {
+  display: block;
+  width: 56px;
+  height: 56px;
+}
+
+.types {
+  display: flex;
+  gap: 4px;
+}
+
+.type-badge {
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--color-type-default);
+  font-size: 12px;
+  text-transform: capitalize;
+
+  &[data-type='normal'] { background: #e0e0d1; }
+  &[data-type='fire'] { background: #ffcfad; }
+  &[data-type='water'] { background: #bfdbfe; }
+  &[data-type='electric'] { background: #fef08a; }
+  &[data-type='grass'] { background: #bbf7d0; }
+  &[data-type='ice'] { background: #cffafe; }
+  &[data-type='fighting'] { background: #fecaca; }
+  &[data-type='poison'] { background: #e9d5ff; }
+  &[data-type='ground'] { background: #ead3b0; }
+  &[data-type='flying'] { background: #ddd6fe; }
+  &[data-type='psychic'] { background: #fbcfe8; }
+  &[data-type='bug'] { background: #d9f99d; }
+  &[data-type='rock'] { background: #e5d8b0; }
+  &[data-type='ghost'] { background: #d5c4ee; }
+  &[data-type='dragon'] { background: #c7d2fe; }
+  &[data-type='dark'] { background: #d6ccc5; }
+  &[data-type='steel'] { background: #cbd5e1; }
+  &[data-type='fairy'] { background: #fce7f3; }
+}

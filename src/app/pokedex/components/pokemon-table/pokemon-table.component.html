@@ -1,0 +1,76 @@
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Sprite</th>
+        <th scope="col">Name</th>
+        <th scope="col">Types</th>
+
+        @for (column of columns; track column.key) {
+          <th scope="col">
+            <button
+              type="button"
+              (click)="sortChanged.emit(column.key)"
+              [attr.aria-label]="'Sort by ' + column.label"
+            >
+              {{ column.label }} ↕
+            </button>
+          </th>
+        }
+
+        <th scope="col">
+          <button type="button" (click)="sortChanged.emit('total')">
+            Total ↕
+          </button>
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (item of pokemon(); track item.id) {
+        <tr (click)="selected.emit(item)">
+          <td>
+            @if (item.spriteUrl) {
+              <img
+                [src]="item.spriteUrl"
+                alt=""
+                width="56"
+                height="56"
+                loading="lazy"
+              />
+            } @else {
+              <span class="sprite-placeholder">—</span>
+            }
+          </td>
+
+          <td>
+            <!-- A button also lets keyboard users select a Pokémon. -->
+            <button
+              type="button"
+              class="pokemon-name"
+              (click)="$event.stopPropagation(); selected.emit(item)"
+            >
+              {{ item.name }}
+            </button>
+          </td>
+
+          <td>
+            <div class="types">
+              @for (type of item.types; track type) {
+                <span class="type-badge" [attr.data-type]="type">
+                  {{ type }}
+                </span>
+              }
+            </div>
+          </td>
+
+          @for (column of columns; track column.key) {
+            <td>{{ item.stats[column.key] }}</td>
+          }
+
+          <td><strong>{{ item.total }}</strong></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

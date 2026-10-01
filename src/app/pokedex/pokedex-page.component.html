@@ -1,0 +1,114 @@
+<main class="pokedex">
+  <h1>Mini Pokédex</h1>
+  <p>Browse Pokémon and compare their stats.</p>
+
+  <section class="filters" aria-label="Pokémon filters">
+    <label>
+      Search by name
+      <input
+        #searchInput
+        type="search"
+        placeholder="Search Pokémon"
+        (input)="selectors.setSearch(searchInput.value)"
+      />
+    </label>
+
+    <label>
+      Type
+      <select
+        #typeSelect
+        (change)="selectors.setType(typeSelect.value)"
+      >
+        <option value="">All types</option>
+
+        @for (type of types(); track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </label>
+  </section>
+
+  <section class="results" aria-label="Pokémon results">
+    @switch (state().status) {
+      @case ('loading') {
+        <div class="status" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <p>Loading Pokémon…</p>
+        </div>
+      }
+
+      @case ('error') {
+        <div class="status" role="alert">
+          <p>{{ state().error }}</p>
+          <button type="button" (click)="store.retry()">
+            Retry
+          </button>
+        </div>
+      }
+
+      @case ('empty') {
+        <div class="status">
+          <p>No Pokémon are available.</p>
+        </div>
+      }
+
+      @case ('success') {
+        @if (page().total === 0) {
+          <div class="status">
+            <p>No Pokémon match your search and type filter.</p>
+          </div>
+        } @else {
+          <app-pokemon-table
+            [pokemon]="page().items"
+            (selected)="selectedPokemon.set($event)"
+            (sortChanged)="selectors.setSort($event)"
+          />
+
+          <div class="pagination">
+            <label>
+              Rows per page
+              <select
+                #sizeSelect
+                [value]="page().pageSize"
+                (change)="selectors.setPageSize(+sizeSelect.value)"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </label>
+
+            <span>
+              Page {{ page().pageIndex + 1 }} of {{ page().pageCount }}
+              · {{ page().total }} Pokémon
+            </span>
+
+            <div class="page-buttons">
+              <button
+                type="button"
+                [disabled]="page().pageIndex === 0"
+                (click)="selectors.setPage(page().pageIndex - 1)"
+              >
+                Previous
+              </button>
+
+              <button
+                type="button"
+                [disabled]="page().pageIndex + 1 >= page().pageCount"
+                (click)="selectors.setPage(page().pageIndex + 1)"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        }
+      }
+    }
+  </section>
+
+  @if (selectedPokemon(); as selected) {
+    <p role="status">
+      Selected: {{ selected.name }}
+    </p>
+  }
+</main>

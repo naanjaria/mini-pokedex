@@ -16,11 +16,13 @@ import {
 import {
   PokemonDetailComponent,
 } from './components/pokemon-detail/pokemon-detail.component';
-
+import {
+  TeamListComponent,
+} from '../teams/components/team-list/team-list.component';
 @Component({
   selector: 'app-pokedex-page',
   standalone: true,
-  imports: [PokemonTableComponent,PokemonDetailComponent],
+  imports: [PokemonTableComponent,PokemonDetailComponent,TeamListComponent],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

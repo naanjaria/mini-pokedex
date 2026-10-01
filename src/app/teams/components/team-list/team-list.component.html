@@ -1,0 +1,54 @@
+<section class="teams" aria-labelledby="teams-title">
+  <h2 id="teams-title">Teams</h2>
+
+  @if (message()) {
+    <p class="message" role="status">{{ message() }}</p>
+  }
+
+  @if (saving()) {
+    <p role="status">Saving team changes…</p>
+  }
+
+  @switch (state().status) {
+    @case ('loading') {
+      <div class="status" role="status">
+        Loading teams…
+      </div>
+    }
+
+    @case ('error') {
+      <div class="status" role="alert">
+        <p>{{ state().error }}</p>
+        <button type="button" (click)="store.load()">Retry</button>
+      </div>
+    }
+
+    @case ('empty') {
+      <div class="status">
+        No teams yet. Create your first team using the form.
+      </div>
+    }
+
+    @case ('success') {
+      <ul>
+        @for (team of state().data; track team.id) {
+          <li>
+            <div>
+              <strong>{{ team.name }}</strong>
+              <p>Pokémon IDs: {{ team.pokemonIds.join(', ') }}</p>
+            </div>
+
+            <button
+              type="button"
+              [disabled]="saving()"
+              (click)="store.delete(team.id)"
+              [attr.aria-label]="'Delete team ' + team.name"
+            >
+              Delete
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

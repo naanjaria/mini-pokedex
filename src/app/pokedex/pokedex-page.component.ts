@@ -13,11 +13,14 @@ import { PokemonSelectors } from './state/pokemon.selectors';
 import {
   PokemonTableComponent,
 } from './components/pokemon-table/pokemon-table.component';
+import {
+  PokemonDetailComponent,
+} from './components/pokemon-detail/pokemon-detail.component';
 
 @Component({
   selector: 'app-pokedex-page',
   standalone: true,
-  imports: [PokemonTableComponent],
+  imports: [PokemonTableComponent,PokemonDetailComponent],
   templateUrl: './pokedex-page.component.html',
   styleUrl: './pokedex-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

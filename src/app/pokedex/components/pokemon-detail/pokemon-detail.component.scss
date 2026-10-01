@@ -1,0 +1,111 @@
+.detail-panel {
+  position: fixed;
+  top: 0;
+
+  right: 0;
+  bottom: 0;
+  width: min(420px, 100%);
+  padding: 20px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+   animation: slide-in 200ms ease-out;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+button {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.status {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.pokemon-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pokemon-heading h3,
+.ability strong {
+  text-transform: capitalize;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+
+  gap: 8px;
+
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin: 0;
+}
+
+.chart {
+ 
+ 
+    height: 280px;
+}
+
+.stat-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-left: 20px;
+}
+
+.ability {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+
+.ability p {
+  margin-bottom: 0;
+  line-height: 1.5;
+
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+   .detail-panel {
+    animation: none;
+   
+}
+}

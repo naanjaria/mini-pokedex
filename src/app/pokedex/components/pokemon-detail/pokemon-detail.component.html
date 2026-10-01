@@ -1,0 +1,98 @@
+<aside
+  class="detail-panel"
+  aria-labelledby="detail-title"
+>
+  <header>
+    <h2 id="detail-title">Pokémon details</h2>
+    <button type="button" (click)="closed.emit()">Close</button>
+  </header>
+
+  @switch (state().status) {
+    @case ('loading') {
+      <div class="status" role="status">
+        Loading details…
+      </div>
+    }
+
+    @case ('error') {
+      <div class="status" role="alert">
+        <p>{{ state().error }}</p>
+        <button type="button" (click)="retry()">Retry</button>
+      </div>
+    }
+
+    @case ('empty') {
+      <div class="status">
+        Pokémon not found.
+      </div>
+    }
+
+    @case ('success') {
+      @if (state().data; as pokemon) {
+        <div class="pokemon-heading">
+          @if (pokemon.spriteUrl) {
+            <img
+              [src]="pokemon.spriteUrl"
+              alt=""
+              width="96"
+              height="96"
+            />
+          }
+          <h3>{{ pokemon.name }}</h3>
+        </div>
+
+        <dl>
+          <dt>ID</dt>
+          <dd>{{ pokemon.id }}</dd>
+
+          <dt>Types</dt>
+          <dd>{{ pokemon.types.join(', ') }}</dd>
+
+          <dt>Height</dt>
+          <dd>{{ pokemon.height / 10 }} m</dd>
+
+          <dt>Weight</dt>
+          <dd>{{ pokemon.weight / 10 }} kg</dd>
+
+          <dt>Total base stats</dt>
+          <dd>{{ pokemon.total }}</dd>
+        </dl>
+
+        <h3>Base stats</h3>
+
+        <div class="chart">
+          <canvas
+            #chartCanvas
+            role="img"
+            [attr.aria-label]="'Base stat radar chart for ' + pokemon.name"
+          ></canvas>
+        </div>
+
+        <ul class="stat-list">
+          <li>HP: {{ pokemon.stats.hp }}</li>
+          <li>Attack: {{ pokemon.stats.attack }}</li>
+          <li>Defense: {{ pokemon.stats.defense }}</li>
+          <li>Sp. Atk: {{ pokemon.stats.specialAttack }}</li>
+          <li>Sp. Def: {{ pokemon.stats.specialDefense }}</li>
+          <li>Speed: {{ pokemon.stats.speed }}</li>
+        </ul>
+
+        <h3>Abilities</h3>
+
+        @for (ability of pokemon.abilities; track $index) {
+          <div class="ability">
+            <strong>
+              {{ ability.name }}
+              @if (ability.isHidden) {
+                <span>(hidden)</span>
+              }
+            </strong>
+            <p>{{ ability.shortEffect }}</p>
+          </div>
+        } @empty {
+          <p>No abilities available.</p>
+        }
+      }
+    }
+  }
+</aside>

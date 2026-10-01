@@ -107,8 +107,9 @@
   </section>
 
   @if (selectedPokemon(); as selected) {
-    <p role="status">
-      Selected: {{ selected.name }}
-    </p>
-  }
+  <app-pokemon-detail
+    [pokemonId]="selected.id"
+    (closed)="selectedPokemon.set(null)"
+  />
+}
 </main>

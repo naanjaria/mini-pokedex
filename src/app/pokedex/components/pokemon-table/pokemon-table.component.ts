@@ -1,3 +1,4 @@
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,6 +11,7 @@ import {
   PokemonStatKey,
 } from '../../models/pokemon.model';
 
+
 @Component({
   selector: 'app-pokemon-table',
   standalone: true,
@@ -17,6 +19,7 @@ import {
   styleUrl: './pokemon-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class PokemonTableComponent {
   readonly pokemon = input.required<Pokemon[]>();
 

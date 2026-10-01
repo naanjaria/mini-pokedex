@@ -11,9 +11,7 @@
 
   @switch (state().status) {
     @case ('loading') {
-      <div class="status" role="status">
-        Loading teams…
-      </div>
+      <div class="status" role="status">Loading teams…</div>
     }
 
     @case ('error') {
@@ -34,8 +32,14 @@
         @for (team of state().data; track team.id) {
           <li>
             <div>
-              <strong>{{ team.name }}</strong>
-              <p>Pokémon IDs: {{ team.pokemonIds.join(', ') }}</p>
+              <button
+                type="button"
+                (click)="selectedTeamId.set(team.id)"
+                [attr.aria-pressed]="selectedTeamId() === team.id"
+              >
+                {{ team.name }}
+              </button>
+              <p>{{ team.pokemonIds.length }} Pokémon</p>
             </div>
 
             <button
@@ -49,6 +53,58 @@
           </li>
         }
       </ul>
+
+      @if (selectedTeam(); as team) {
+        <section class="summary" aria-labelledby="summary-title">
+          <h3 id="summary-title">{{ team.name }}</h3>
+
+          @switch (pokemonState().status) {
+            @case ('loading') {
+              <p role="status">Loading team Pokémon…</p>
+            }
+
+            @case ('error') {
+              <p role="alert">{{ pokemonState().error }}</p>
+              <button type="button" (click)="pokemonStore.retry()">
+                Retry Pokémon
+              </button>
+            }
+
+            @case ('empty') {
+              <p>No Pokémon data is available for this team.</p>
+            }
+
+            @case ('success') {
+              @if (members().length === team.pokemonIds.length) {
+                <p>Total base stats: {{ totalBaseStats() }}</p>
+
+                <h4>Pokémon</h4>
+                <ul>
+                  @for (pokemon of members(); track pokemon.id) {
+                    <li>{{ pokemon.name }}</li>
+                  }
+                </ul>
+
+                <h4>Type distribution</h4>
+                <ul>
+                  @for (entry of typeDistribution(); track entry.type) {
+                    <li>{{ entry.type }}: {{ entry.count }}</li>
+                  } @empty {
+                    <li>No types available.</li>
+                  }
+                </ul>
+              } @else {
+                <p>
+                  Some Pokémon in this team are unavailable.
+                  A complete summary cannot be calculated.
+                </p>
+              }
+            }
+          }
+        </section>
+      } @else {
+        <p>Select a team to see its Pokémon and stats.</p>
+      }
     }
   }
 </section>

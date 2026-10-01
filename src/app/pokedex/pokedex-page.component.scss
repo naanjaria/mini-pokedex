@@ -1,27 +1,19 @@
 .pokedex {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin: 20px 0;
-}
-
-.filters label {
-  display: grid;
-  gap: 6px;
+h1 {
+  margin: 0 0 8px;
 }
 
 input,
 select,
 button {
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
@@ -36,10 +28,61 @@ button:disabled {
   cursor: default;
 }
 
-// Reserve space during loading so the page does not collapse.
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 16px 0 24px;
+  background: #e8edf4;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.tabs button {
+  min-width: 120px;
+  padding: 10px 20px;
+  border: 0;
+  background: transparent;
+  color: #526174;
+  font-weight: 600;
+}
+
+.tabs button:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.tabs button[aria-selected='true'] {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.filters label {
+  display: grid;
+  gap: 6px;
+}
+
+.filters input {
+  width: 260px;
+  max-width: 100%;
+}
+
+.filters select {
+  min-width: 150px;
+}
+
 .results {
   min-height: 800px;
+  overflow: hidden;
   border: 1px solid var(--color-border);
+  border-radius: 8px;
   background: var(--color-surface);
 }
 
@@ -51,15 +94,6 @@ button:disabled {
   justify-content: center;
   padding: 20px;
   text-align: center;
-}
-
-.spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid var(--color-border);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
 }
 
 .pagination {
@@ -76,15 +110,55 @@ button:disabled {
   gap: 8px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.team-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .spinner {
-    animation: none;
-  }
+.team-actions button {
+  padding: 10px 18px;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
 }
+
+dialog {
+  width: min(560px, calc(100% - 32px));
+  max-height: 85vh;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+dialog::backdrop {
+  background: rgba(24, 34, 48, 0.5);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.dialog-header button {
+  padding: 6px 12px;
+  background: var(--color-background);
+}
+
 .skeleton-table {
   min-height: 800px;
   overflow: hidden;
@@ -152,16 +226,6 @@ button:disabled {
   white-space: nowrap;
 }
 
-@keyframes shimmer {
-  from { background-position: 200% 0; }
-  to { background-position: -200% 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: none;
-  }
-}
 .mutation-toast {
   position: fixed;
   right: 20px;
@@ -173,7 +237,7 @@ button:disabled {
   max-width: min(420px, calc(100vw - 40px));
   padding: 12px 16px;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--color-surface);
   color: var(--color-text);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -183,6 +247,23 @@ button:disabled {
 .mutation-toast button {
   flex-shrink: 0;
   padding: 4px 8px;
+}
+
+// Keep modal feedback inside the dialog rather than over its form.
+dialog .mutation-toast {
+  position: static;
+  max-width: none;
+  margin: 0 24px 20px;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
 }
 
 @keyframes toast-entry {
@@ -197,7 +278,43 @@ button:disabled {
   }
 }
 
+@media (max-width: 480px) {
+  .pokedex {
+    padding: 16px;
+  }
+
+  .tabs {
+    display: flex;
+  }
+
+  .tabs button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filters label,
+  .filters input,
+  .filters select {
+    width: 100%;
+  }
+
+  .dialog-header {
+    padding: 16px;
+  }
+
+  dialog .mutation-toast {
+    margin: 0 16px 16px;
+  }
+
+  .skeleton-header,
+  .skeleton-row {
+    grid-template-columns: 48px 1fr 1fr 1fr;
+    gap: 8px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .skeleton,
   .mutation-toast {
     animation: none;
   }

@@ -1,31 +1,47 @@
 .builder {
-  margin-top: 24px;
-  padding: 16px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  padding: 20px 24px 24px;
+}
+
+.builder > p {
+  margin: 0 0 20px;
+  color: #526174;
+  line-height: 1.5;
 }
 
 label {
   display: block;
-  margin: 16px 0 6px;
+  margin: 18px 0 8px;
+  font-weight: 600;
 }
 
 input,
 button {
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  background: var(--color-surface);
-  color: var(--color-text);
   font: inherit;
 }
 
 input {
   width: 100%;
-  max-width: 400px;
+  padding: 11px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+input:focus {
+  border-color: var(--color-primary);
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #a21919;
 }
 
 button {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
 }
 
@@ -35,13 +51,18 @@ button:disabled {
 }
 
 .suggestions {
-  max-width: 400px;
   min-height: 120px;
   max-height: 200px;
   overflow-y: auto;
   margin-top: 8px;
+  padding: 6px;
   border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.suggestions p {
   padding: 8px;
+  color: #526174;
 }
 
 ul {
@@ -52,6 +73,7 @@ ul {
 
 li button {
   width: 100%;
+  padding: 9px 10px;
   text-align: left;
   border: 0;
   text-transform: capitalize;
@@ -65,24 +87,48 @@ li button:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
-  background: var(--color-background);
-  border-radius: 4px;
+  padding: 4px 8px 4px 12px;
+  border: 1px solid #cbdaf2;
+  border-radius: 16px;
+  background: #edf3fc;
+  color: #244b86;
   text-transform: capitalize;
 }
 
 .chip button {
+  padding: 2px 6px;
   border: 0;
   background: transparent;
+  color: inherit;
+  font-size: 18px;
 }
 
 .error {
+  margin: 6px 0;
   color: #a21919;
+  font-size: 14px;
+}
+
+button[type='submit'] {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .builder {
+    padding: 16px;
+  }
 }
